@@ -7,11 +7,7 @@ Config = collections.namedtuple('Config', 'screen_width, screen_height')
 
 
 def main():
-    # TODO: Figure out how the hell PyGame works again because I can't bloody well remember anything
-    # TODO: Create a main menu that allows you to start a new game or load a save file
-    # TODO: Create a save file system that can load and save
     # TODO: After pressing new game the player should be taken to character creation
-    # TODO: Find and implement sounds. I will need music, sound effects, UI selections sounds, etc.
     running = True
 
     while running:
@@ -33,7 +29,34 @@ def main():
 
 
 def main_menu():
-    pass
+
+    menu = True
+
+    # play menu music
+    pygame.mixer.music.load("src/sounds/music/BRPG_Assault_FULL_Loop.wav")
+    pygame.mixer.music.play(-1)
+
+    while menu:
+        # locks FPS to 30
+        pygame.time.Clock().tick(30)
+
+        # events
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        # key presses
+        key = pygame.key.get_pressed()
+        if key[pygame.K_RETURN]:
+            menu = False
+
+        # rendering
+        screen.fill(WHITE)
+        text_surf, text_rect = text_objects("YITEB", large_font)
+        text_rect.center = ((SCREEN_WIDTH/2), (SCREEN_HEIGHT/4))
+        screen.blit(text_surf, text_rect)
+        pygame.display.update()
 
 
 def load_settings():
@@ -51,9 +74,19 @@ def load_settings():
     return c
 
 
+def text_objects(text, font):
+    text_surface = font.render(text, True, BLACK)
+    return text_surface, text_surface.get_rect()
+
+
 if __name__ == '__main__':
     # setting up pygame
     pygame.init()
+
+    # setting up sound mixer
+    pygame.mixer.init(48000, 16, 2)
+
+    # loading sounds
 
     # loading settings from file
     config = load_settings()
@@ -64,5 +97,8 @@ if __name__ == '__main__':
     pygame.display.set_caption('Yiteb: God of Madness')
     font = pygame.font.SysFont('monospace', 15)
     large_font = pygame.font.SysFont('monospace', 45)
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
 
+    main_menu()
     main()
